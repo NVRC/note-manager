@@ -6,14 +6,23 @@ import {    Container,
             Input,
             Icon,
             Button,
-            Text } from 'native-base';
+            Text,
+            Drawer  } from 'native-base';
 import { Font, AppLoading, Constants } from "expo";
-
+import Sidebar from './components/sidebar';
+import HeaderComponent from './components/header';
 
 export default class App extends React.Component {
     state = {
         fontLoaded: false,
     }
+
+    closeDrawer = () => {
+        this.drawer._root.close()
+    };
+    openDrawer = () => {
+        this.drawer._root.open()
+    };
 
     async componentWillMount(){
         await Expo.Font.loadAsync({
@@ -29,17 +38,21 @@ export default class App extends React.Component {
 
         // NOTE: Currently only ios-# icons work on Expo
         return (
-            <Container>
-                <Header searchBar rounded style={styles.headerStyle}>
-                    <Item>
-                        <Input placeholder="Search" />
-                        <Icon name="ios-paper" />
-                    </Item>
-                    <Button transparent>
-                        <Text>Search</Text>
-                    </Button>
-                </Header>
-            </Container>
+            <Drawer style={styles.drawerStyle}
+                ref={(ref) => { this.drawer = ref; }}
+                content={<Sidebar/>}
+                onClose={() => this.closeDrawer()}
+            >
+                <Container>
+                    <HeaderComponent
+                        openDrawer={this.openDrawer.bind(this)}
+                    />
+
+                    
+
+
+                </Container>
+            </Drawer>
     );
   }
 }
@@ -51,7 +64,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
   },
-  headerStyle: {
-      marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight
-  }
+  drawerStyle: {
+  },
 });
