@@ -7,7 +7,7 @@ export default {
     FONT_WEIGHT_HEAVY: 800,
     PRIMARY_COLOR: 'rgb( 34,102,102)',
     ACCENT_COLOR_LIGHTER: 'rgb(102,153,153)',
-    ACCENT_COLOR_LIGHT: 'rgb( 64,127,127)',
-    ACCENT_COLOR_DARK: 'rgb( 13, 77, 77)',
-    ACCENT_COLOR_DARKER: 'rgb(  0, 51, 51)',
+    ACCENT_COLOR_LIGHT: 'rgb(64,127,127)',
+    ACCENT_COLOR_DARK: 'rgb(13, 77, 77)',
+    ACCENT_COLOR_DARKER: 'rgb(0, 51, 51)',
 };

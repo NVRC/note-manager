@@ -23,7 +23,7 @@ export default class HeaderComponent extends Component {
                 </Left>
                 <Item>
                     <Input placeholder="Search" />
-                    <Icon name="ios-paper" />
+                    <Icon style={{color: theme.ACCENT_COLOR_DARKER}} name="ios-paper" />
                 </Item>
                 <Button transparent>
                     <Text>Search</Text>

@@ -13,7 +13,10 @@
     "lodash": "^4.17.11",
     "native-base": "^2.8.1",
     "react": "^16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-local-mongodb": "^2.2.3",
+    "react-native-sensitive-info": "^5.2.6",
+    "react-navigation": "^2.18.2"
   },
   "devDependencies": {
     "eslint": "^5.8.0",

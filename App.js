@@ -11,6 +11,7 @@ import {    Container,
 import { Font, AppLoading, Constants } from "expo";
 import Sidebar from './components/sidebar';
 import HeaderComponent from './components/header';
+import NoteInput from './components/note-input';
 
 export default class App extends React.Component {
     state = {
@@ -48,7 +49,7 @@ export default class App extends React.Component {
                         openDrawer={this.openDrawer.bind(this)}
                     />
 
-                    
+                    <NoteInput/>
 
 
                 </Container>
