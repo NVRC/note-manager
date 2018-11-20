@@ -44,12 +44,20 @@ export default class NoteInput extends Component {
     }
 
     componentDidMount(){
-
+        db.transaction(tx => {
+              tx.executeSql(
+                'create table if not exists notes (id integer primary key not null, title text, tags text, note text);',
+                [],
+                ()=> console.log('created database'),
+                ()=> console.log('db insert error')
+              );
+        });
     }
 
     parseText( text ){
         let tags = this.generateTags( text );
         this.setState({
+            text: text,
             tags: tags,
             textSet: true,
         });
@@ -62,8 +70,36 @@ export default class NoteInput extends Component {
         //  TODO: Add semantic analysis and suggested keywords
     }
 
-    publishNote(){
+    getStringFromTags(){
+        return JSON.stringify(this.state.tags);
+    }
 
+    publishNote(){
+        console.log('Added Note:');
+        console.log('Title:\t' +this.state.title);
+        console.log('Text:\t'+this.state.text);
+
+        db.transaction(
+              tx => {
+                tx.executeSql('insert into notes (title, tags, note) values (?, ?, ?)',
+                [this.state.title,this.getStringFromTags(), this.state.text],
+                ()=> console.log('note added to notes'),
+                ()=> console.log('db insert error')
+                );
+              },
+        );
+        //  Reset Fields
+        this.resetForm();
+    }
+
+    update(){
+        db.transaction(tx => {
+            tx.executeSql(
+                `select * from notes;`,
+                [],
+                (_, { rows: { _array } }) => console.log(_array)
+            );
+        });
     }
 
 
@@ -92,6 +128,13 @@ export default class NoteInput extends Component {
             searching: true
         });
     }
+    resetForm(){
+        this.setState({
+            text: '',
+            title: 'Untitled',
+            tags: '',
+        });
+    }
 
     render() {
 
@@ -100,10 +143,10 @@ export default class NoteInput extends Component {
                 <Form>
                     <Item floatingLabel>
                         <Label>Title</Label>
-                        <Input onChangeText={(title) => this.setState({title})}
+                        <Input value={this.state.title} onChangeText={(title) => this.setState({title})}
                         onSubmitEditing={()=>this.search()}/>
                     </Item>
-                    <Textarea onChangeText={(text) =>
+                    <Textarea value={this.state.text} onChangeText={(text) =>
                         this.parseText(text)
                     } rowSpan={6}
                     bordered placeholder="Type an idea to get started"
