@@ -29,7 +29,6 @@ const db = SQLite.openDatabase(DB_STR);
 
 export default class NoteInput extends Component {
 
-
 /*
     var Datastore = require('react-native-local-mongodb'),
     let _db = new Datastore({ filename: 'asyncStorageKey', autoload: true });
@@ -43,6 +42,7 @@ export default class NoteInput extends Component {
                         searching: false,
                         textSet: false,
                         fontLoading: true,
+                        titleIsValidated: false,
                         };
     }
 
@@ -56,6 +56,20 @@ export default class NoteInput extends Component {
               );
         });
     }
+
+    getTitles(){
+        let titles;
+        //  Fetch Titles to visually enforce unique title rules
+        db.transaction(tx => {
+            tx.executeSql(
+                `select title from notes;`,
+                [],
+                (_, { rows: { _array } }) => titles = _array
+            );
+        });
+        return titles;
+    }
+
 
     parseText( text ){
         let tags = this.generateTags( text );
@@ -81,11 +95,14 @@ export default class NoteInput extends Component {
         console.log('Added Note:');
         console.log('Title:\t' +this.state.title);
         console.log('Text:\t'+this.state.text);
+        let tempTitle = this.state.title;
+        let tempText = this.state.text;
+        let tempTags = this.getStringFromTags();
 
         db.transaction(
               tx => {
                 tx.executeSql('insert into notes (title, tags, note) values (?, ?, ?)',
-                [this.state.title,this.getStringFromTags(), this.state.text],
+                [tempTitle, tempTags, tempText],
                 ()=> console.log('note added to notes'),
                 ()=> console.log('db insert error')
                 );
@@ -95,15 +112,6 @@ export default class NoteInput extends Component {
         this.resetForm();
     }
 
-    update(){
-        db.transaction(tx => {
-            tx.executeSql(
-                `select * from notes;`,
-                [],
-                (_, { rows: { _array } }) => console.log(_array)
-            );
-        });
-    }
 
 
     dbFactoryMakeStruct(names) {
@@ -139,6 +147,16 @@ export default class NoteInput extends Component {
         });
     }
 
+    validateTitle( title ){
+        let isValidated = this.getTitles().includes( title );
+        if ( isValidated ){
+            this.setState({title: title, titleIsValidated: true});
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     async componentWillMount(){
         await Expo.Font.loadAsync({
             Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
@@ -156,11 +174,20 @@ export default class NoteInput extends Component {
             <HeaderComponent {...this.props}/>
             <Content>
                 <Form>
-                    <Item floatingLabel>
+                {this.state.titleIsValidated ?
+                    <Item success floatingLabel>
+                        <Label>Title</Label>
+                        <Input value={this.state.title} onChangeText={(title) => this.validateTitle({title})}
+                        onSubmitEditing={()=>this.search()}/>
+                    </Item>
+                    :
+                    <Item error floatingLabel>
                         <Label>Title</Label>
                         <Input value={this.state.title} onChangeText={(title) => this.setState({title})}
                         onSubmitEditing={()=>this.search()}/>
+                        <Icon name='close-circle' />
                     </Item>
+                }
                     <Textarea value={this.state.text} onChangeText={(text) =>
                         this.parseText(text)
                     } rowSpan={6}
