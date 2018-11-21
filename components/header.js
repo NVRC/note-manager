@@ -16,7 +16,7 @@ export default class HeaderComponent extends Component {
             <Header searchBar rounded style={styles.headerStyle}>
                 <Left>
                 <Button transparent
-                      onPress={()=>this.props.openDrawer()}
+                      onPress={()=>this.props.navigation.openDrawer()}
                 >
                     <Icon name='ios-menu' />
                 </Button>

@@ -19,6 +19,8 @@ import {    Container,
 //          SQLite supported on Expo
 import Expo, { SQLite } from 'expo';
 import theme from '../styles/theme.style.js';
+import HeaderComponent from './header';
+
 
 
 const DB_STR = 'notes.db';
@@ -40,6 +42,7 @@ export default class NoteInput extends Component {
                         tags: '',
                         searching: false,
                         textSet: false,
+                        fontLoading: true,
                         };
     }
 
@@ -136,9 +139,21 @@ export default class NoteInput extends Component {
         });
     }
 
+    async componentWillMount(){
+        await Expo.Font.loadAsync({
+            Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+        });
+        this.setState({fontLoading: false});
+    }
+
     render() {
+        if(this.state.fontLoading == true){
+            return <Expo.AppLoading/>;
+        }
 
         return (
+            <Container>
+            <HeaderComponent {...this.props}/>
             <Content>
                 <Form>
                     <Item floatingLabel>
@@ -174,6 +189,7 @@ export default class NoteInput extends Component {
 
 
             </Content>
+            </Container>
         );
     }
 }
