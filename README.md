@@ -32,4 +32,4 @@ General process:
 2. Stem each token (reduce to base syntax form)
 3. Assign to each token a positive-negative ranking [-1..1]
 4. Derive for each token a list of synonymes
-5. Search within the `tag` set to associate `note` object together
+5. Search within the `tag` set to associate related `note` objects
